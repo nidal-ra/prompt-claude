@@ -1,192 +1,451 @@
-Act as a senior Three.js/WebGL engineer, physically based rendering (PBR) specialist, luxury product visualization artist, and creative frontend developer. Your task is to diagnose and repair the existing Dar Saifa perfume website's 3D bottle experience, making it visually premium, physically believable, smooth, and performant.
+MASTER PROMPT — COMPLETE WEBSITE AUDIT, REPAIR & PREMIUM IMPROVEMENT
 
-IMPORTANT PROJECT RULES
-- Work inside the existing repository. Inspect the current code and assets before changing anything.
-- Preserve the current website, routing, typography, responsive layout, interactions, and established brand identity.
-- The cinematic 3D experience belongs ONLY on the "About Our House" page. Do not add a 3D canvas, heavy animation loop, or duplicate bottle scene to other routes.
-- Brand palette: deep burgundy #3D0F14, dark espresso #241915, antique gold #B8862B, warm ivory #F2EDE3. The perfume liquid must complement this palette.
-- Do not replace the existing bottle model with generic primitives or a generic perfume model. Preserve the Dar Saifa bottle’s identity, silhouette, cap, label, and proportions unless a specific change is necessary and justified.
-- Do not claim a visual issue is fixed unless you have implemented the change and checked it using available tools. Be explicit about anything that could not be verified.
-- Avoid an unnecessary full rewrite. Prefer targeted, reversible improvements to the current architecture.
+ROLE
 
-PHASE 1 — AUDIT THE EXISTING PROJECT
-Before editing:
-1. Inspect package.json, the framework, the existing 3D renderer, scene components, model and texture assets, material definitions, lighting, camera, scroll logic, animation libraries, and CSS.
-2. Identify whether the project uses vanilla Three.js, React Three Fiber (R3F), Drei, GSAP, ScrollTrigger, Lenis, Theatre.js, or other relevant tools.
-3. Inspect the actual bottle model and available textures. Determine whether the model is GLB/GLTF, procedural geometry, or another format.
-4. Locate duplicate bottle meshes, transparent objects, mirror planes, light-shaft geometry, post-processing passes, scroll handlers, and render loops.
-5. Identify the cause of each problem below. Distinguish confirmed causes from hypotheses.
-6. Check existing Claude Code skills and plugins. If available, use relevant Three.js/R3F, WebGL debugging, GSAP ScrollTrigger, and frontend-design skills. Prefer the existing project stack. Do not install duplicate libraries or run unfamiliar install commands without explaining why and checking compatibility.
-7. Give me a short prioritized diagnosis, then proceed with the implementation unless a destructive change or missing asset requires my approval.
+Act as a Senior Full-Stack Engineer, Software Architect, UI/UX Designer, Creative Developer, Web Animation Specialist, SEO Expert, Accessibility Specialist, Performance Engineer, Multilingual Content Editor, and QA Engineer.
 
-PHASE 2 — FIX THE BOTTLE MATERIALS AND GLASS
-The current glass looks like a murky brown-grey haze. Make it resemble premium real perfume glass.
+You are working directly inside the local repository of an existing website.
 
-- Use physically based materials appropriate to the existing geometry and renderer.
-- For Three.js MeshPhysicalMaterial, investigate transmission, thickness, IOR, roughness, attenuationColor, attenuationDistance, and envMapIntensity where supported and appropriate.
-- Use physically plausible values as a starting point, then tune them against the actual scene. Do not blindly maximize transmission or thickness.
-- Provide real environmental reflections using a suitable HDR environment or studio environment setup. Use a compatible PMREM/environment workflow for the installed Three.js version.
-- Make the front and rear glass edges readable through reflections and refraction while keeping the interior liquid visible.
-- Avoid turning the glass into opaque dark plastic, flat transparent surfaces, or a uniformly tinted shell.
-- Account for transparent-object sorting and overlapping front/back glass surfaces. Do not apply arbitrary renderOrder values without understanding the rendering problem.
-- Inspect the bottle mesh normals, face orientation, thickness, and material assignment. Correct the geometry if the model itself is causing the murky appearance.
-- Keep the hero bottle visually clear against the burgundy environment.
+Your mission is to audit, repair, optimize, and improve the entire website, page by page and component by component, until it reaches the highest quality reasonably achievable within the current project’s architecture and constraints.
 
-LIQUID — REAL DEPTH, NOT A FLAT ORANGE PATCH
-- Replace the current off-palette orange appearance with deep amber, cognac, or copper-amber tones that harmonize with burgundy, espresso, antique gold, and ivory.
-- Make the liquid volume look three-dimensional, with believable depth, absorption, and light interaction.
-- Inspect the actual liquid geometry. The liquid must sit inside the bottle and follow the intended fill level.
-- Create a subtle, physically believable meniscus or curved liquid surface if the geometry and rendering approach support it.
-- Ensure the liquid does not appear as a sticker, floating flat plane, or glowing orange block.
-- Tune liquid color and transmission/opacity according to the selected rendering approach. Do not assume the same material parameters work for both a solid liquid volume and a thin surface.
-- Prevent visible intersections, leakage through the glass, and incorrect layering.
-- Keep the result elegant and restrained rather than overly saturated or artificially emissive.
+This is not a theoretical audit. You must actively implement improvements, execute the project, test it, identify failures, fix them, and verify the results.
 
-LABEL, LOGO, AND MONOGRAM
-- Make "DAR SAFIA" and the monogram sharp, legible, correctly positioned, and consistent with the original brand artwork.
-- Inspect the source texture resolution, UV mapping, texture color space, filtering, anisotropy, and mipmap settings.
-- Prefer the original high-resolution logo/label artwork if available. Do not redraw or invent a new logo.
-- If needed, create a clean, high-resolution label texture or use an appropriate geometry/decal solution compatible with the current project.
-- Prevent stretching, blurry text, aliasing, shimmering, and label intersections with the bottle.
-- Verify the result at the actual on-screen size and at high-DPI display settings.
+Think and work like a multidisciplinary team responsible for delivering a polished, production-ready website.
 
-BLACK SIDE BOTTLES
-- Preserve the intended dark design, but reveal their contours with subtle environment reflections, carefully controlled roughness, and studio rim lighting.
-- Avoid pure-black surfaces with no visible shape.
-- Keep the hero bottle visually dominant.
-- Inspect their individual scales and spacing; use design-intended proportions rather than blindly scaling copies of the hero bottle.
-- Ensure the headline remains legible and does not collide with the left bottle.
+Main principle: Do not just tell me what is wrong. Find it, fix it, and verify the fix.
 
-PHASE 3 — CORRECT THE GEOMETRY
-- Inspect the octagonal cap for flat shading, insufficient segments, poor normals, or visibly faceted surfaces.
-- Where appropriate, improve segment density and compute correct vertex normals. If the cap is intentionally faceted, preserve that design language while improving the shading.
-- Preserve crisp, intentional edges where the actual design calls for them; do not indiscriminately smooth everything.
-- Check bevels, silhouette, bottle shoulders, base thickness, cap alignment, and overall proportions.
-- Inspect the mesh hierarchy and scene graph for duplicate bottle geometry or accidental transparent duplicates.
-- Diagnose the faint ghost bottle visible in the light column. Check duplicate meshes, mirrors, overlapping transparent surfaces, reflection artifacts, and z-fighting before choosing a fix.
-- Remove only confirmed unintended geometry. Do not remove deliberate artistic elements.
+⸻
 
-PHASE 4 — BUILD A PREMIUM STUDIO LIGHTING SETUP
-Create a controlled luxury fragrance campaign look, not a collection of harsh white streaks and glowing planes.
+PHASE 1 — PROJECT DISCOVERY AND TOOL PREPARATION
 
-- Use a deliberate studio-lighting hierarchy: key light, fill light, rim lights, and large soft reflection sources.
-- Shape reflections to reveal the bottle's silhouette, glass thickness, shoulders, cap, and base.
-- Avoid a distracting white stripe running through the logo or the center of the bottle.
-- Use environment-map reflections that complement the direct lighting.
-- Ground each bottle with a believable contact shadow on the pedestal.
-- Avoid fake hovering, excessively blurred shadows, and shadows that contradict the light direction.
-- Reduce the gold pedestal's excessive bloom. Use a restrained effect and an appropriate luminance threshold or selective bloom approach if supported by the existing post-processing setup.
-- Make the gold edge elegant and defined instead of letting the glow bleed into the bottle base.
-- Replace hard-edged vertical light-shaft planes with soft gradients, suitable alpha falloff, and restrained blending. Ensure the shafts blend into the scene rather than looking like flat cards.
-- Check the light shafts for unwanted interactions with transparent glass and prevent them from creating ghost silhouettes.
-- Address banding on the burgundy wall through appropriate texture precision, color management, subtle dither/noise where appropriate, or a better gradient implementation. Avoid visible grain.
-- Keep the background cinematic but subordinate to the product.
+Before making changes, thoroughly understand the existing project.
 
-PHASE 5 — COLOR MANAGEMENT AND POST-PROCESSING
-- Inspect the installed Three.js version and the current renderer configuration before changing APIs.
-- Use the appropriate output color space, normally SRGBColorSpace for display output, and a consistent color-management pipeline.
-- Evaluate ACESFilmicToneMapping or another suitable tone-mapping approach against the existing art direction. Use it only after checking the current renderer and post-processing pipeline; avoid applying tone mapping twice.
-- Tune exposure, tone mapping, environment intensity, and post-processing together.
-- Preserve deep burgundy shadows, natural amber liquid, antique gold highlights, and warm ivory details.
-- Avoid clipped white reflections, muddy blacks, oversaturated orange, washed-out gold, and crushed bottle detail.
-- Check that texture color spaces are correct: color/albedo textures should use the appropriate sRGB handling, while non-color data maps should use the appropriate non-color space.
-- Verify the final rendered colors rather than assuming the hexadecimal brand palette will look identical under every lighting condition.
+1. Inspect the repository structure, framework, dependencies, package manager, build system, routing, configuration, and environment requirements.
+2. Identify every page, route, layout, reusable component, interaction, animation, form, and supported language.
+3. Inspect the existing design system, typography, color palette, spacing, visual identity, and component conventions.
+4. Identify the current architecture, technical debt, duplicated code, obsolete dependencies, potential security concerns, and implementation weaknesses.
+5. Read existing documentation and project instructions, including CLAUDE.md and any applicable skill instructions.
+6. Check the project’s Git status before editing. Preserve unrelated user changes and never overwrite existing work unnecessarily.
 
-PHASE 6 — REBUILD THE SCROLL EXPERIENCE
-The current bottle movement appears tied to raw page scroll, causing jitter, drifting, and motion when the hero is off-screen.
+Skills, plugins and tools
 
-- If the project already uses GSAP and ScrollTrigger, prefer one well-coordinated timeline with a section-specific ScrollTrigger rather than multiple competing scroll listeners.
-- If it uses React Three Fiber, preserve the existing R3F architecture and integrate animation without forcing unnecessary React re-renders.
-- Do not add R3F, GSAP, Lenis, Theatre.js, or another framework merely because it is available. Introduce a dependency only when it solves a real problem and is compatible with the project.
-- Scope scroll progress to the About Our House hero section, with clear start/end points. Do not map the entire page's scroll position directly to the bottle transform.
-- Use a pinned or sticky storytelling section only if it fits the existing layout and improves the experience. Preserve natural scrolling elsewhere.
-- Animate the camera and bottle with intention. Use a restrained rotation of approximately 30–60 degrees only if appropriate to the bottle's orientation and design, with a subtle lift or camera transition.
-- Keep the logo readable at important moments. Avoid uncontrolled movement on every axis.
-- Coordinate the headline, side bottles, hero bottle, pedestal, and camera so they do not overlap.
-- Add controlled damping or smoothing to the scroll-driven values. Avoid lag that makes the scene feel detached from scrolling.
-- Ensure forward scrolling, reverse scrolling, fast wheel movement, touch scrolling, refreshes, and resizing all behave consistently.
-- Use the correct lifecycle cleanup for GSAP timelines, ScrollTriggers, observers, animation callbacks, and event listeners. In React, account for mounting/unmounting and Strict Mode.
-- Ensure ScrollTrigger refreshes when necessary after fonts, images, model assets, or layout changes. Avoid excessive refresh calls.
-- Disable or simplify nonessential scroll choreography when prefers-reduced-motion is enabled.
-- Do not allow the bottle to move when this hero section is off-screen.
-- Do not break browser history, page navigation, or other site animations.
+Discover the skills, plugins, MCP integrations, browser tools, and testing utilities available in the current environment.
 
-PHASE 7 — PERFORMANCE AND RESPONSIVE BEHAVIOR
-Target a smooth, stable experience on modern desktop and acceptable performance on mobile.
+Use the relevant capabilities for:
 
-- Profile before making major performance compromises.
-- If using R3F, inspect Canvas settings and use an appropriate DPR range, such as [1, 1.5] or [1, 2], only after testing real devices.
-- If using vanilla Three.js, apply an equivalent sensible pixel-ratio cap.
-- Reduce particle count, expensive transmission layers, unnecessary transparent meshes, and costly post-processing on small or slower devices.
-- Avoid rendering continuously when the scene is static. Use demand rendering or a visibility-aware render loop when compatible with the existing architecture.
-- Use IntersectionObserver or a suitable equivalent to suspend nonessential rendering when the scene is off-screen. Ensure the scene resumes correctly when visible.
-- Do not break GSAP or other animation updates when switching to demand rendering; explicitly request frames when needed.
-- Reuse geometries, materials, textures, and render resources. Dispose of resources correctly when no longer needed.
-- Prevent memory leaks, duplicate animation loops, repeated texture loads, unnecessary state updates, and repeated compilation.
-- Optimize model and texture assets when needed. Prefer a properly optimized GLB/glTF asset; use mesh compression or texture compression only when compatible with the deployment pipeline and visual quality requirements.
-- Lazy-load the 3D scene if it improves initial page loading without creating a poor experience.
-- Add a graceful static poster or non-WebGL fallback for unsupported devices or rendering failures.
-- Keep a high-quality desktop experience while scaling back expensive effects on mobile.
-- Test the actual narrow-screen composition: heading, side bottles, hero bottle, pedestal, and CTA must not overlap or become unreadable.
+* Frontend architecture and framework-specific development.
+* UI/UX design and visual refinement.
+* Advanced web animations, GSAP, ScrollTrigger, Three.js, and WebGL, when applicable.
+* Responsive design and mobile optimization.
+* Technical SEO and multilingual SEO.
+* Accessibility and WCAG.
+* Performance profiling and Core Web Vitals.
+* Browser automation, Playwright, Chrome DevTools, and end-to-end testing.
+* Visual regression testing, screenshots, and debugging.
+* Copywriting, translation, and localization.
 
-PHASE 8 — SKILLS, TOOLS, AND LIBRARY CHOICES
-Use existing project dependencies and installed Claude Code skills first.
+Read and follow the instructions of relevant installed skills before using them.
 
-Relevant tools to evaluate:
-- Three.js for rendering and WebGL.
-- React Three Fiber and Drei only if the project uses React and these fit the existing architecture.
-- GSAP ScrollTrigger for section-scoped, coordinated scroll animation.
-- Theatre.js only if visual timeline authoring materially helps this project.
-- Blender for source-model geometry and material preparation, if the required source assets are available.
-- glTF/GLB and appropriate optimization tooling for production model delivery.
-- Browser developer tools and available screenshot/browser automation for visual and performance checks.
+If an essential skill or tool is missing, investigate whether a trusted, compatible alternative can be installed. Avoid unnecessary dependencies, unsafe installations, redundant tools, or modifications that introduce avoidable risks.
 
-Check for relevant Claude Code skills, including:
-- Three.js / WebGL skills.
-- React Three Fiber skills, if applicable.
-- Three.js debugging and performance skills.
-- GSAP ScrollTrigger skills.
-- Frontend design skills.
+Do not claim to have used a tool unless you actually used it. If browser access or another capability is unavailable, use the best available alternative and clearly report the limitation.
 
-If these skills are not installed, do not pretend to have used them. Tell me which specific skills would help and provide the appropriate installation instructions separately. Review third-party skill source and commands before execution. Do not blindly install every suggested plugin or change package versions without checking compatibility.
+⸻
 
-Use current official documentation as the source of truth for APIs, particularly when working with version-sensitive Three.js, R3F, and GSAP features. Community skills are useful guidance, not authoritative documentation.
+PHASE 2 — COMPLETE WEBSITE AUDIT
 
-PHASE 9 — VERIFY THE RESULT
-After implementation:
-1. Run the project's existing lint, type-check, build, and relevant tests where available.
-2. Inspect browser console errors, shader errors, missing assets, and WebGL warnings.
-3. Use available browser or screenshot tools to inspect the actual About Our House page at desktop and mobile widths.
-4. Inspect the bottle from multiple angles and at the intended final camera position. Verify glass transparency, liquid depth, label readability, cap shading, side-bottle reflections, contact shadows, and bloom.
-5. Test the entire scroll timeline, including reverse scrolling, fast scrolling, resizing, and leaving/re-entering the section.
-6. Verify that the 3D scene and animation do not run on unrelated pages.
-7. Verify reduced-motion behavior and the fallback experience.
-8. If automated visual inspection or real-device performance testing is unavailable, state that limitation honestly rather than claiming the visual result is perfect.
-9. Avoid changing unrelated website functionality.
+Systematically inspect every route and page, including less visible pages, mobile navigation, footer links, error states, forms, modals, and shared components.
 
-ACCEPTANCE CRITERIA
-- Glass looks transparent and reflective, with believable thickness and visible bottle contents.
-- Liquid has rich amber/copper depth and a convincing fill surface.
-- DAR SAFIA branding is crisp and correctly mapped.
-- Cap geometry and shading look intentional and premium.
-- Dark side bottles have controlled reflections and readable silhouettes.
-- No unintended duplicate or ghost bottle is visible.
-- Bottles sit naturally on the pedestal with credible contact shadows.
-- Bloom and light shafts are restrained and integrated.
-- Burgundy background gradients are smooth.
-- Color management is consistent and highlights retain detail.
-- Scroll animation is deliberate, section-scoped, smooth, reversible, and responsive.
-- Headline and bottle composition remain readable without collisions.
-- Off-screen and mobile performance are handled deliberately.
-- No unnecessary architectural rewrite or unrelated regression is introduced.
+Create an internal inventory of the routes and a checklist of issues to resolve. Do not limit the audit to the homepage or the most obvious components.
 
-FINAL REPORT
-When finished, provide:
-- The confirmed root cause of each major issue.
-- The files changed and what each change accomplishes.
-- Any assets created, replaced, or still needed.
-- Any dependencies added or avoided, with reasons.
-- The verification performed and its actual results.
-- Remaining limitations, trade-offs, or issues that require a human visual review.
+Technical integrity
 
-Start with the audit. Fix the highest-impact visual problems first, then tune animation and performance. Do not merely describe proposed fixes: implement the appropriate changes in the existing project and verify what you can.
+Find and fix, wherever possible:
+
+* JavaScript and TypeScript errors.
+* Build failures and runtime exceptions.
+* Broken imports, incorrect paths, and missing dependencies.
+* React warnings, hydration problems, and rendering issues.
+* Broken links, missing assets, and failed requests.
+* Incorrect routing, redirects, and navigation behavior.
+* Forms that do not submit or validate correctly.
+* Buttons and interactive elements that do not perform their intended actions.
+* State management bugs, event-handling problems, and memory leaks.
+* Duplicated or unnecessarily complex implementations.
+* Deprecated APIs and avoidable technical debt.
+* Security weaknesses introduced by the application’s implementation.
+
+Preserve existing functionality, integrations, and business logic. Never fabricate successful API responses, remove meaningful validation, or hide errors simply to make the application appear functional.
+
+Architecture and maintainability
+
+Improve code quality where justified:
+
+* Simplify unnecessarily complex components.
+* Reuse shared components and design tokens.
+* Remove genuinely unused code and imports.
+* Improve TypeScript types and error handling.
+* Reduce duplication without overengineering.
+* Preserve a clear separation of concerns.
+* Keep dependencies and abstractions appropriate to the project.
+
+Do not rewrite the entire application merely for stylistic reasons. Refactor selectively when it produces measurable benefits.
+
+⸻
+
+PHASE 3 — VISUAL DESIGN AND UI/UX IMPROVEMENTS
+
+Review the entire website as an experienced designer evaluating a real production product.
+
+Improve the overall visual quality while preserving the existing brand identity, content strategy, and intended audience.
+
+Inspect and refine:
+
+* Visual hierarchy and composition.
+* Typography, font loading, line height, and readability.
+* Spacing, alignment, margins, and padding.
+* Color consistency and contrast.
+* Buttons, cards, forms, navigation, headers, and footers.
+* Image quality, cropping, aspect ratios, and positioning.
+* Section transitions and page rhythm.
+* Desktop layouts and content density.
+* Empty states, loading states, errors, and feedback messages.
+* Consistency across all pages and reusable components.
+
+Remove visual inconsistencies, awkward spacing, unnecessary clutter, poorly aligned elements, generic-looking sections, and unfinished details.
+
+Make the interface feel intentional, cohesive, modern, polished, and professionally designed.
+
+Do not redesign everything indiscriminately. Keep strong existing sections and improve the parts that genuinely need work.
+
+Avoid excessive gradients, gratuitous glassmorphism, unnecessary decorative effects, distracting animations, and design trends that do not suit the brand.
+
+⸻
+
+PHASE 4 — ANIMATIONS AND INTERACTION QUALITY
+
+Audit every animation and interactive transition throughout the website.
+
+Inspect CSS animations, transitions, Framer Motion, GSAP, ScrollTrigger, Three.js, WebGL, canvas effects, and other animation systems actually present in the project.
+
+Animation audit
+
+Check for:
+
+* Jerky or inconsistent motion.
+* Incorrect animation timing and easing.
+* Elements appearing too early, too late, or in the wrong position.
+* Broken scroll-triggered animations.
+* Animations that fail when scrolling upward.
+* Incorrect initial states and incomplete transitions.
+* Layout shifts during animation.
+* Overlapping animations and conflicting scroll triggers.
+* Animations that break after navigation or resizing.
+* Mobile-specific rendering problems.
+* Excessive CPU/GPU usage and unnecessary rendering.
+* Animation cleanup problems and duplicated event listeners.
+
+Animation improvements
+
+Where appropriate:
+
+* Improve smoothness, timing, easing, and continuity.
+* Make transitions feel intentional and connected.
+* Refine scroll-based storytelling and reveal effects.
+* Correct transform origins, object positioning, and 3D perspective.
+* Improve lighting, materials, depth, and visual clarity in existing 3D scenes.
+* Ensure animations respond correctly to viewport changes.
+* Optimize animation loops and scroll handlers.
+* Respect reduced-motion preferences.
+* Preserve touch interactions and mobile performance.
+
+For complex animations, inspect the entire sequence from start to finish. Test scrolling forward and backward, resizing the viewport, refreshing the page, and navigating away and back when relevant.
+
+Do not merely inspect the animation code. Verify the rendered animation in a real browser whenever browser tooling is available.
+
+Avoid adding animations simply because they look impressive. Every effect must improve the experience rather than distract from the content.
+
+⸻
+
+PHASE 5 — RESPONSIVE DESIGN AND MOBILE-FIRST QUALITY
+
+Test and improve the website across mobile phones, tablets, laptops, and large desktop screens.
+
+Use actual browser viewport testing where possible, including representative widths such as:
+
+* 320–375 px: narrow mobile screens.
+* 390–430 px: modern mobile screens.
+* 768 px: tablet layouts.
+* 1024 px: small desktop or landscape tablet.
+* 1280–1440 px: standard desktop.
+* 1920 px and above: large desktop screens.
+
+These are testing targets, not rigid breakpoints. Adapt the layout to the existing design and content.
+
+Check for:
+
+* Horizontal overflow and unwanted scrollbars.
+* Broken grids, flex layouts, and responsive columns.
+* Incorrect font sizes and line wrapping.
+* Oversized headings and overlapping text.
+* Buttons that are too small or difficult to tap.
+* Navigation menus that fail on touchscreens.
+* Images and videos with incorrect sizing.
+* Modals and forms that exceed the viewport.
+* Inconsistent spacing and excessive empty areas.
+* Touch, hover, and focus behavior.
+* Mobile animation performance.
+* Unnecessary content hiding or duplication.
+
+Ensure that each page remains readable, visually balanced, and fully functional at every tested viewport.
+
+Do not fix mobile layouts by arbitrarily hiding important content or disabling essential functionality.
+
+⸻
+
+PHASE 6 — SEO AND SEARCH VISIBILITY
+
+Perform a complete technical and on-page SEO audit.
+
+Inspect and improve, where appropriate:
+
+* Page titles and meta descriptions.
+* Heading hierarchy and semantic HTML.
+* Canonical URLs.
+* Robots directives and indexability.
+* XML sitemap and robots.txt.
+* Internal linking and navigation structure.
+* Image filenames, descriptive alt text, and image optimization.
+* Open Graph and social sharing metadata.
+* Structured data and JSON-LD where appropriate.
+* Redirects, broken links, and duplicate content.
+* URL structure and trailing-slash consistency.
+* Rendering and content discoverability by search engines.
+* Page speed and Core Web Vitals.
+* Language-specific URLs, metadata, and hreflang tags.
+* Appropriate handling of localized canonical URLs.
+
+Preserve valid existing SEO configuration. Do not blindly change indexing directives, canonical URLs, URL structures, or redirects.
+
+Do not invent ratings, testimonials, business details, certifications, or structured-data claims.
+
+Verify the actual rendered HTML when possible, not only the metadata defined in source files.
+
+⸻
+
+PHASE 7 — MULTILINGUAL CONTENT AND LOCALIZATION
+
+Identify every language supported by the website and audit all translated content, including navigation, page titles, buttons, forms, validation messages, notifications, metadata, and footer content.
+
+For every supported language:
+
+* Correct spelling, grammar, punctuation, and unnatural phrasing.
+* Improve clarity, readability, and consistency of tone.
+* Eliminate untranslated strings and accidental language mixing.
+* Correct broken translation keys and missing content.
+* Ensure text fits properly within buttons, cards, menus, and mobile layouts.
+* Adapt wording naturally to the target audience rather than translating word for word.
+* Improve calls to action and content hierarchy without inventing facts.
+* Maintain consistent terminology across the entire website.
+* Correct language attributes and localized metadata.
+* Verify language switching, localized routes, and fallback behavior.
+* Check RTL layouts if Arabic is supported.
+
+Preserve the meaning, factual accuracy, brand voice, and intent of the original content.
+
+Do not delete content simply because it is difficult to translate. Do not invent offers, guarantees, company claims, or business information.
+
+Where copywriting improvements are appropriate, make the content more engaging, concise, natural, and conversion-oriented.
+
+⸻
+
+PHASE 8 — ACCESSIBILITY
+
+Audit accessibility across the entire website using automated tools and manual testing where possible.
+
+Inspect:
+
+* Semantic HTML and heading structure.
+* Keyboard navigation and visible focus states.
+* Accessible names for buttons and controls.
+* Form labels and understandable error messages.
+* Color contrast and text readability.
+* Image alternative text.
+* Modal focus management.
+* Screen-reader compatibility.
+* Keyboard-accessible dropdowns and menus.
+* Reduced-motion preferences.
+* Accessible status messages and dynamic content.
+* Appropriate ARIA usage.
+
+Use WCAG 2.2 AA as a target where applicable.
+
+Prefer native HTML semantics over unnecessary ARIA attributes. Do not claim full accessibility compliance without sufficient verification.
+
+⸻
+
+PHASE 9 — PERFORMANCE OPTIMIZATION
+
+Measure before optimizing whenever possible.
+
+Investigate:
+
+* JavaScript bundle size.
+* Unnecessary dependencies.
+* Render-blocking resources.
+* Image and video loading.
+* Font loading and layout shifts.
+* Lazy loading and resource prioritization.
+* Unnecessary React re-renders.
+* Expensive calculations and event handlers.
+* Memory leaks and animation overhead.
+* Three.js/WebGL rendering costs.
+* Unnecessary network requests.
+* Caching and asset delivery.
+* Server rendering and hydration costs, when applicable.
+
+Optimize without sacrificing visual quality or functionality.
+
+Use Lighthouse, browser performance tools, build analysis, or equivalent utilities when available.
+
+Distinguish measured improvements from assumptions. Do not report performance scores or Core Web Vitals measurements unless they were actually obtained.
+
+⸻
+
+PHASE 10 — FUNCTIONAL AND BROWSER TESTING
+
+Run the website locally and test as much of the application as possible.
+
+Start by checking the existing build and test scripts. Use the package manager already established by the repository.
+
+Execute relevant checks, such as:
+
+* Production build.
+* TypeScript checks.
+* Linting.
+* Unit tests.
+* Integration tests.
+* End-to-end tests.
+* Accessibility scans.
+* Broken-link checks.
+* Browser console inspection.
+* Network request inspection.
+* Responsive viewport testing.
+* Visual screenshot inspection.
+
+Use browser automation when available to navigate through every discovered route and exercise important interactions.
+
+Test buttons, menus, forms, language switching, navigation, scroll interactions, animations, and error states.
+
+For critical user flows, verify both the successful path and relevant failure states.
+
+Do not mark a page as fully tested merely because its source code was inspected.
+
+When a test fails, investigate the root cause and fix it if possible. Rerun the relevant test after making changes.
+
+Avoid destructive tests against production services or real user data. Use local or test environments for operations that modify data.
+
+⸻
+
+PHASE 11 — IMPLEMENTATION STRATEGY
+
+Work methodically instead of making random changes.
+
+Step 1: Establish a baseline
+
+Record the initial project state, build results, existing tests, and discovered routes.
+
+Step 2: Create a prioritized issue list
+
+Classify findings by severity:
+
+* Critical: broken core functionality, security problems, or application failures.
+* High: broken pages, major responsive defects, severe animation failures, or critical SEO problems.
+* Medium: visual inconsistencies, performance bottlenecks, accessibility problems, and secondary functional defects.
+* Low: minor polish, small copy improvements, and nonessential refinements.
+
+Step 3: Fix issues in dependency order
+
+Resolve foundational problems before polishing dependent components.
+
+Prioritize correctness, stability, usability, and functionality before optional visual enhancements.
+
+Step 4: Implement improvements
+
+Modify the actual source files. Keep changes focused, maintainable, and consistent with the existing architecture.
+
+Step 5: Verify each major batch
+
+Run relevant checks, inspect the rendered result, and address regressions before proceeding.
+
+Step 6: Perform a final regression audit
+
+Revisit every discovered route, recheck shared components, test important interactions, and verify that improvements did not break other pages or languages.
+
+Do not stop after the first successful build. A successful build alone does not prove that the website works correctly.
+
+⸻
+
+PHASE 12 — NON-NEGOTIABLE RULES
+
+1. Audit the entire website, not only the homepage.
+2. Make real code changes rather than providing recommendations alone.
+3. Never claim that something was tested unless the test was actually performed.
+4. Never silently ignore errors, warnings, failed tests, or broken functionality.
+5. Never remove important features just to simplify implementation.
+6. Never overwrite unrelated user changes.
+7. Never expose secrets, credentials, API keys, or private environment variables.
+8. Never invent content, business information, testimonials, or SEO facts.
+9. Never install unnecessary or untrusted tools.
+10. Never sacrifice responsive behavior, accessibility, or performance for decorative effects.
+11. Preserve the established visual identity unless a specific improvement is justified.
+12. Do not rewrite working code without a clear benefit.
+13. If a problem cannot be resolved because of missing credentials, unavailable external services, or missing tools, document the limitation and continue with the remaining work.
+14. Do not finish merely because the checklist has been written. Execute the work.
+15. Do not claim perfection. Focus on measurable improvements and verified results.
+
+⸻
+
+PHASE 13 — FINAL ACCEPTANCE CRITERIA
+
+The task is complete only when you have made the best achievable progress across the following areas:
+
+* Every discovered route has been inspected.
+* Critical and high-priority issues have been addressed wherever possible.
+* The production build passes, or remaining failures are clearly documented.
+* Relevant automated tests have been executed.
+* Important user interactions have been verified.
+* Animations have been inspected and improved where needed.
+* Responsive behavior has been checked across representative viewports.
+* SEO and metadata have been reviewed.
+* All supported languages have been audited.
+* Accessibility and performance have been reviewed.
+* No known regression introduced by your changes has been knowingly left uninvestigated.
+* Remaining limitations and unverified areas are documented honestly.
+
+Final report
+
+At the end, provide a concise but informative report containing:
+
+1. Overall assessment of the original website.
+2. Pages and routes inspected.
+3. Critical, high, medium, and low-priority issues discovered.
+4. Bugs fixed and improvements implemented.
+5. Animation and visual improvements.
+6. Responsive improvements.
+7. SEO, localization, and accessibility improvements.
+8. Performance changes and actual measurements, when available.
+9. Skills, plugins, browser tools, and testing utilities actually used.
+10. Build, lint, type-check, and test results.
+11. Any remaining bugs, limitations, or unverified areas.
+12. Recommended next steps, if any.
+
+Distinguish clearly between completed work, partially completed work, and work that could not be verified.
+
+FINAL DIRECTIVE
+
+Begin by inspecting the repository and discovering the available tools and skills.
+
+Then audit, prioritize, implement, test, and improve the website in a continuous workflow.
+
+Be proactive, rigorous, detail-oriented, and quality-driven. Treat every page as part of one coherent product. Your goal is to deliver the most polished, reliable, accessible, responsive, performant, and search-friendly version of this website that the existing project and available environment can reasonably support.
